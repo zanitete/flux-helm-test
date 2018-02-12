@@ -11,7 +11,7 @@
     releasename: kube-system-mongodb
     customizations:
       - name: image
-        value: bitnami/mongodb:3.7.1-r1
+        value: bitnami/mongodb:3.7.1-r0
       - name: imagePullPolicy
         value: IfNotPresent
             
