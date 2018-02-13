@@ -5,13 +5,13 @@
     name: mongodb
     namespace: kube-system
     labels:
-      chart: charts_mongodb
+      chart: mongodb
   spec:
-    chartgitpath: charts/mongodb
+    chartgitpath: mongodb
     releasename: kube-system-mongodb
     customizations:
       - name: image
-        value: bitnami/mongodb:3.7.1-r0
+        value: bitnami/mongodb:3.7.1-r1
       - name: imagePullPolicy
         value: IfNotPresent
             
