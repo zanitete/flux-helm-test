@@ -1,15 +1,15 @@
 ---
   apiVersion: helm.integrations.flux.weave.works/v1alpha
-  kind: FluxHelmResource
+  kind: FluxHelmRelease
   metadata:
     name: mongodb
     namespace: kube-system
     labels:
       chart: mongodb
   spec:
-    chartgitpath: mongodb
-    releasename: kube-system-mongodb
-    customizations:
+    chartGitPath: mongodb
+    releaseName: kube-system-mongodb
+    values:
       - name: image
         value: bitnami/mongodb:3.7.1-r1
       - name: imagePullPolicy
