@@ -1,5 +1,5 @@
 ---
-  apiVersion: integrations.flux/v1
+  apiVersion: helm.integrations.flux.weave.works/v1alpha
   kind: FluxHelmResource
   metadata:
     name: mongodb
