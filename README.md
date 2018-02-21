@@ -1,11 +1,11 @@
 # flux-helm-test
 A repository with test data for flux-helm integration
 
-# Helm Integration - alpha stage
+# Helm Integration - alpha
 
 ## Synopsis
 
-Helm integration provides an extension to Flux to be able to deal with Helm Chart releases.
+Helm integration provides an extension to Flux (https://github.com/weaveworks/flux) to be able to deal with Helm Chart releases.
 A Chart release is described through a custom resource of a bespoke kubernetes kind. A custom resource contains all that needs to be known to do a Chart release (see Custom resource section). At this stage, Helm charts and chart release configuration need to share one repo.
 
 Helm integration has three parts:
