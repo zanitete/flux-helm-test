@@ -1,84 +1,99 @@
 # flux-helm-test
-A repository with test data for flux-helm integration
 
-# Helm Integration - alpha
+A repository with example configs for relasing Helm charts via Flux.
+
+# The Helm operator (alpha release)
 
 ## Synopsis
 
-Helm integration provides an extension to Flux (https://github.com/weaveworks/flux) to be able to deal with Helm Chart releases.
-A Chart release is described through a custom resource of a bespoke kubernetes kind. A custom resource contains all that needs to be known to do a Chart release (see Custom resource section). At this stage, Helm charts and chart release configuration need to share one repo.
+The Flux Helm operator provides an extension to Flux
+(https://github.com/weaveworks/flux) to be able to automate Helm Chart
+releases. In other words, given a desired state as a file in git, it
+does `helm install` and `helm upgrade` for you.
 
-Helm integration has three parts:
+A Chart release is described through a
+[Kubernetes custom resource](https://kubernetes.io/docs/concepts/api-extension/custom-resources/). Each
+custom resource contains all that needs to be known to do a Chart
+release. The Flux daemon synchronises these resources from git to the
+cluster, and the Flux Helm operator makes sure Helm charts are
+released as specified in the resources.
 
-| helm integration part                   | purpose                       |
-|------------------------|-------------------------------|
-| CustomResourceDefinition for bespoke custom resources | Custom resources (CR) provide chart release configuration/desired state |
-| Flux agent                                            | Monitors chart release configurations. On finding git changes applies CR manifests |
-| Helm operator                                         | Watches for kubernetes events related to custom resources of FluxHelmRelease kind and acts accordingly on their creation/update/deletion by creating/updating/deleting the relevant release. Also monitors the repo’s charts path and updates the relevant release(s)|
+## Custom resource (`FluxHelmRelease`)
 
-## Custom resource
+To record that you want a chart release, you create a resource of the kind `FluxHelmRelease`.
 
 ### Example
 ```
 ---
-  apiVersion: helm.integrations.flux.weave.works/v1alpha
-  kind: FluxHelmRelease
-  metadata:
-    name: mongodb
-    namespace:  myNamespace
-    labels:
-      chart: mongodb
-  spec:
-    chartGitPath: mongodb
-    releaseName: mongo-database
-    values:
-      - name: image
-        value: bitnami/mongodb:3.7.1-r1
-      - name: imagePullPolicy
-        value: IfNotPresent
+apiVersion: helm.integrations.flux.weave.works/v1alpha
+kind: FluxHelmRelease
+metadata:
+  name: mongodb
+  namespace:  default
+  labels:
+    chart: mongodb
+spec:
+  chartGitPath: mongodb
+  releaseName: mongo-database
+  values:
+    - name: image
+      value: bitnami/mongodb:3.7.1-r1
+    - name: imagePullPolicy
+      value: IfNotPresent
 ```
 
- - custom resource (CR) name is arbitrary (needs to follow k8s naming conventions):
- - namespace is optional (default by default). Determines where the CR and the Chart are deployed:
-  - If releaseName is not provided, the release name will be created as $namespace-$customResourceName
- - labels.chart corresponds to chartGitPath, ie chart name
- - chartGitPath is the chart subdir under the charts path (provided to helm-operator together with the rest of the ). Equivalent to the chart name
- - releaseName: optional. Needs to be provided if there is already a running chart release in the cluster and the user wants Flux to manage it from now on.
- - values are user customizations of default parameter values
+ - the `name` is mandatory and needs to follow k8s naming conventions
+ - the `namespace` is optional. It determines where the resource, and thereby the chart, are created
+ - if the `releaseName` field is not provided, the release name used for Helm will be `$namespace-$name`
+ - the label `chart` is mandatory, and should match the directory containing the chart
+ - `chartGitPath` is the directory containing a chart, given relative to the charts path (provided to the helm-operator)
+ - `values` are user customizations of default parameter values from the chart itself
 
-## Prerequisites
+## Prerequisites and limitations
 
-- *Helm server tiller should be ideally running in the cluster already, though the helm-operator will wait until it does.* 
-- *Git repo with the following (required) structure:*
+- Tiller (the server component of Helm) should be running in the
+  cluster. See
+  [the Helm documentation](https://docs.helm.sh/using_helm/#quickstart)
+  for how to install Helm. The Helm operator alpha will only deal with
+  an unauthenticated Tiller installation (the default).
 
-```
-gitUser/repoName/charts/chart1# 
-gitUser/repoName/charts/chart2 etc
+- You need a git repo with a similar directory structure to this repo
+  (if not this repo). That is, the configuration you want sync'ed by
+  the Flux daemon is in its own subdirectory (e.g., `config/` in this
+  repository), separate to your charts. You must tell Flux to use
+  _only_ that directory, otherwise it will try to sync the charts, and
+  fail.
 
-gitUser/repoName/releaseconfig/customResource1.yaml
-gitUser/repoName/releaseconfig/customResource2.yaml etc
-```
-
-### Note
-
-1. Path with chart release configuration (gitUser/repoName/releaseconfig) is provided in the Weave Cloud GUI
-
-2. Path containing charts (as subdirectories directly under this path) is provided to helm-operator in its deployment manifest
-
-3. Name of either path is configurable:
-  - releaseconfig path (containing custom resources manifests) is provided through the Weave Cloud UI (used by flux agent)
-  - charts path can be configured in the helm-operator-deployment.yaml (used by helm-operator)
-	
-4. One releaseconfig yaml file can contain multiple custom resource manifests
+- The Helm operator alpha only deals with charts in a single git
+  repository, which you supply to it as a command-line argument, along
+  with a parent directory for charts within that repository. In the
+  resources, charts are given relative to the parent directory.
 
 ## User setup
 
-1. A cluster available
-2. Set up helm by running: `helm init`
-3. Make a fork of https://github.com/weaveworks/flux-helm-test
-4. Change the git repo information in the artifacts/weave-helm-operator.yaml to refer to the forked one
-5. Go to Weave Cloud and create an instance
-6. Set up Weave agents by running the provided curl command
-7. Before providing git repo information in the GUI, run the following command locally (from the forked repo root): `kubectl apply -f artifacts/weave-helm-operator.yaml`
-8. Provide git repo information in the Weave Cloud UI
-9. All should be set up and running
+You can fork this repo and use it as the basis for trying out the Helm
+operator alpha. It is best to use a fresh Kubernetes cluster.
+
+ 1. Set up helm by running `helm init`, as in [Helm's installation instructions](https://docs.helm.sh/using_helm/#quickstart).
+ 2. Make a fork of this repository to your own account, and clone it to your computer
+ 3. In your cloned repo, change the git URL in `artifacts/weave-helm-operator.yaml` to refer to your fork on github
+ 4. Go to [Weave Cloud](https://cloud.weave.works/) and create an instance
+ 5. Set up the Weave agents by running the provided curl command
+
+ 6. Before configuring "Deploy" for your new Weave Cloud instance, run
+    this in the cloned repository to install the Helm operator:
+
+    kubectl apply -f artifacts/
+
+ 7. Now go back to Weave Cloud and set "Deploy" up, giving the git URL
+    of your forked repo, and the path `config/`. You will need to
+    install the deploy key (either using the button, or by copying and
+    pasting), since both the operator and the Flux daemon need it to
+    access your forked git repository. Run the kubectl command given
+    there to complete the setup.
+
+At this point, you can click through to Explore, wait a bit, and see
+the resources started in the cluster by the charts being released. If
+you make a change in the chart, or a change in the chart release
+resource, and push a commit to your fork, the change will be reflected
+shortly in your cluster.

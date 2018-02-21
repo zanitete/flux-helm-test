@@ -3,7 +3,7 @@
   kind: FluxHelmRelease
   metadata:
     name: mariadb
-    namespace: kube-system
+    namespace: default
     labels:
       chart: mariadb
   spec:
@@ -11,4 +11,5 @@
     values:
       - name: image
         value: bitnami/mariadb:10.1.30-r1
-
+      - name: persistence.enabled
+        value: false
