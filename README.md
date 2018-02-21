@@ -13,7 +13,7 @@ Helm integration has three parts:
 | helm integration part                   | purpose                       |
 |------------------------|-------------------------------|
 | CustomResourceDefinition for bespoke custom resources | Custom resources (CR) provide chart release configuration/desired state |
-| Flux agent                                            | Monitors chart release configurations and on finding git changes applies CR manifests |
+| Flux agent                                            | Monitors chart release configurations. On finding git changes applies CR manifests |
 | Helm operator                                         | Watches for kubernetes events related to custom resources of FluxHelmRelease kind and acts accordingly on their creation/update/deletion by creating/updating/deleting the relevant release. Also monitors the repo’s charts path and updates the relevant release(s)|
 
 ## Custom resource
@@ -40,7 +40,7 @@ Helm integration has three parts:
 
  - custom resource (CR) name is arbitrary (needs to follow k8s naming conventions):
  - namespace is optional (default by default). Determines where the CR and the Chart are deployed:
- - If releaseName is not provided, the release name will be created as $namespace-$customResourceName
+  - If releaseName is not provided, the release name will be created as $namespace-$customResourceName
  - labels.chart corresponds to chartGitPath, ie chart name
  - chartGitPath is the chart subdir under the charts path (provided to helm-operator together with the rest of the ). Equivalent to the chart name
  - releaseName: optional. Needs to be provided if there is already a running chart release in the cluster and the user wants Flux to manage it from now on.
@@ -48,9 +48,8 @@ Helm integration has three parts:
 
 ## Prerequisites
 
-* Helm server tiller should be ideally running in the cluster already, though the helm-operator will wait until it does. ** 
-
-* A git repo with the following (required) structure: *
+- *Helm server tiller should be ideally running in the cluster already, though the helm-operator will wait until it does.* 
+- *Git repo with the following (required) structure:*
 
 ```
 gitUser/repoName/charts/chart1# 
@@ -66,11 +65,11 @@ gitUser/repoName/releaseconfig/customResource2.yaml etc
 
 2. Path containing charts (as subdirectories directly under this path) is provided to helm-operator in its deployment manifest
 
-2. Name of either path is configurable:
- - releaseconfig path (containing custom resources manifests) is provided through the Weave Cloud UI (used by flux agent)
- - charts path can be configured through the helm-operator-deployment.yaml (used by helm-operator)
+3. Name of either path is configurable:
+  - releaseconfig path (containing custom resources manifests) is provided through the Weave Cloud UI (used by flux agent)
+  - charts path can be configured in the helm-operator-deployment.yaml (used by helm-operator)
 	
-3. One releaseconfig yaml file can contain multiple custom resource manifests
+4. One releaseconfig yaml file can contain multiple custom resource manifests
 
 ## User setup
 
