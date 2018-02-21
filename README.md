@@ -10,11 +10,11 @@ A Chart release is described through a custom resource of a bespoke kubernetes k
 
 Helm integration has three parts:
 
-| part                   | purpose                       |
+| helm integration part                   | purpose                       |
 |------------------------|-------------------------------|
 | CustomResourceDefinition for bespoke custom resources | Custom resources (CR) provide chart release configuration/desired state |
-| Flux agent                                            | * Monitors chart release configurations and on finding git changes applies CR manifests |
-| Helm operator                                         | * Watches for kubernetes events related to custom resources of FluxHelmRelease kind and acts accordingly on their creation/update/deletion by creating/updating/deleting the relevant release, * It monitors the repo’s charts path and updates the relevant release|
+| Flux agent                                            | Monitors chart release configurations and on finding git changes applies CR manifests |
+| Helm operator                                         | Watches for kubernetes events related to custom resources of FluxHelmRelease kind and acts accordingly on their creation/update/deletion by creating/updating/deleting the relevant release. Also monitors the repo’s charts path and updates the relevant release(s)|
 
 ## Custom resource
 
