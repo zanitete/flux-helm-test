@@ -10,6 +10,8 @@ A Chart release is described through a custom resource of a bespoke kubernetes k
 
 Helm integration has three parts:
 
+| part                   | purpose                       |
+|------------------------|-------------------------------|
 | CustomResourceDefinition for bespoke custom resources | Custom resources (CR) provide chart release configuration/desired state |
 | Flux agent                                            | * Monitors chart release configurations and on finding git changes applies CR manifests |
 | Helm operator                                         | * Watches for kubernetes events related to custom resources of FluxHelmRelease kind and acts accordingly on their creation/update/deletion by creating/updating/deleting the relevant release, * It monitors the repo’s charts path and updates the relevant release|
@@ -17,6 +19,7 @@ Helm integration has three parts:
 ## Custom resource
 
 ### Example
+```
 ---
   apiVersion: helm.integrations.flux.weave.works/v1alpha
   kind: FluxHelmRelease
@@ -33,37 +36,41 @@ Helm integration has three parts:
         value: bitnami/mongodb:3.7.1-r1
       - name: imagePullPolicy
         value: IfNotPresent
+```
 
-custom resource (CR) name is arbitrary (needs to follow k8s naming conventions):
-If releaseName is not provided, the release name will be created as $namespace-$customResourceName
-namespace is optional (default by default). Determines where the CR and the Chart are deployed:
-If releaseName is not provided, the release name will be created as $namespace-$customResourceName
-labels.chart corresponds to chartGitPath
-chartGitPath is the chart subdir under the charts path (provided to helm-operator together with the rest of the )
-Equivalent to the chart name
-releaseName: optional. Needs to be provided if there is already a running chart release in the cluster and the user wants Flux to manage it from now on.
-values are user customizations of default parameter values
+ - custom resource (CR) name is arbitrary (needs to follow k8s naming conventions):
+ - namespace is optional (default by default). Determines where the CR and the Chart are deployed:
+ - If releaseName is not provided, the release name will be created as $namespace-$customResourceName
+ - labels.chart corresponds to chartGitPath, ie chart name
+ - chartGitPath is the chart subdir under the charts path (provided to helm-operator together with the rest of the ). Equivalent to the chart name
+ - releaseName: optional. Needs to be provided if there is already a running chart release in the cluster and the user wants Flux to manage it from now on.
+ - values are user customizations of default parameter values
 
 ## Prerequisites
 
-Helm server tiller should be ideally running in the cluster already, though the helm-operator will wait until it does
-A git repo with the following (required) structure:
+* Helm server tiller should be ideally running in the cluster already, though the helm-operator will wait until it does. ** 
 
+* A git repo with the following (required) structure: *
+
+```
 gitUser/repoName/charts/chart1# 
 gitUser/repoName/charts/chart2 etc
 
 gitUser/repoName/releaseconfig/customResource1.yaml
 gitUser/repoName/releaseconfig/customResource2.yaml etc
+```
 
-Note
-1. Name of either of the two paths is configurable:
-releaseconfig path (containing custom resources manifests) is provided through the Weave Cloud UI (used by flux agent)
-charts path can be configured through the helm-operator-deployment.yaml (used by helm-operator)
+### Note
+
+1. Path with chart release configuration (gitUser/repoName/releaseconfig) is provided in the Weave Cloud GUI
+
+2. Path containing charts (as subdirectories directly under this path) is provided to helm-operator in its deployment manifest
+
+2. Name of either path is configurable:
+ - releaseconfig path (containing custom resources manifests) is provided through the Weave Cloud UI (used by flux agent)
+ - charts path can be configured through the helm-operator-deployment.yaml (used by helm-operator)
 	
-2. One  releaseconfig yaml file can contain multiple custom resource manifests.
-
-A directory with charts 
-Each subdirectory is checked if it is a valid chart (containing Chart.yaml)
+3. One releaseconfig yaml file can contain multiple custom resource manifests
 
 ## User setup
 
