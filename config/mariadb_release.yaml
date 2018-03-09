@@ -12,4 +12,4 @@
       - name: image
         value: bitnami/mariadb:10.1.30-r1
       - name: persistence.enabled
-        value: false
+        value: "false"

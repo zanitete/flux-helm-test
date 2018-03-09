@@ -15,4 +15,4 @@
       - name: imagePullPolicy
         value: IfNotPresent
       - name: persistence.enabled
-        value: false
+        value: "false"
