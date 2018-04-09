@@ -36,10 +36,10 @@ spec:
   chartGitPath: mongodb
   releaseName: mongo-database
   values:
-    - name: image
-      value: bitnami/mongodb:3.7.1-r1
-    - name: imagePullPolicy
-      value: IfNotPresent
+    image: bitnami/mongodb:3.7.1-r1
+    imagePullPolicy: IfNotPresent
+    persistence:
+      enabled: false
 ```
 
  - the `name` is mandatory and needs to follow k8s naming conventions
