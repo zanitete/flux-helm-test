@@ -10,9 +10,7 @@
     chartGitPath: mongodb
     releaseName: mongodb-database
     values:
-      - name: image
-        value: bitnami/mongodb:3.7.1-r1
-      - name: imagePullPolicy
-        value: IfNotPresent
-      - name: persistence.enabled
-        value: "false"
+      image: bitnami/mongodb:3.7.1-r1
+      imagePullPolicy: IfNotPresent
+      persistence:
+        enabled: false
