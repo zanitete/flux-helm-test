@@ -25,7 +25,7 @@ To record that you want a chart release, you create a resource of the kind `Flux
 ### Example
 ```
 ---
-apiVersion: helm.integrations.flux.weave.works/v1alpha
+apiVersion: helm.integrations.flux.weave.works/v1alpha2
 kind: FluxHelmRelease
 metadata:
   name: mongodb
