@@ -29,7 +29,7 @@ apiVersion: helm.integrations.flux.weave.works/v1alpha2
 kind: FluxHelmRelease
 metadata:
   name: mongodb
-  namespace:  default
+  namespace: test
   labels:
     chart: mongodb
 spec:
@@ -59,10 +59,7 @@ spec:
 
 - You need a git repo with a similar directory structure to this repo
   (if not this repo). That is, the configuration you want sync'ed by
-  the Flux daemon is in its own subdirectory (e.g., `config/` in this
-  repository), separate to your charts. You must tell Flux to use
-  _only_ that directory, otherwise it will try to sync the charts, and
-  fail.
+  the Flux daemon.
 
 - The Helm operator alpha only deals with charts in a single git
   repository, which you supply to it as a command-line argument, along
@@ -86,7 +83,7 @@ operator alpha. It is best to use a fresh Kubernetes cluster.
     kubectl apply -f artifacts/
 
  7. Now go back to Weave Cloud and set "Deploy" up, giving the git URL
-    of your forked repo, and the path `config`. You will need to
+    of your forked repo, and the path `releases`. You will need to
     install the deploy key (either using the button, or by copying and
     pasting), since both the operator and the Flux daemon need it to
     access your forked git repository. Run the kubectl command given
