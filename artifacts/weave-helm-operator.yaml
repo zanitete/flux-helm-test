@@ -3,6 +3,8 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: weave-flux-helm-operator
+  annotations:
+    flux.weave.works/ignore: "true"
   labels:
     name: weave-flux-helm-operator
     app: weave-flux
