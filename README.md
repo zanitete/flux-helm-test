@@ -83,7 +83,7 @@ operator alpha. It is best to use a fresh Kubernetes cluster.
     kubectl apply -f artifacts/
 
  7. Now go back to Weave Cloud and set "Deploy" up, giving the git URL
-    of your forked repo, and the path `releases`. You will need to
+    of your forked repo. You will need to
     install the deploy key (either using the button, or by copying and
     pasting), since both the operator and the Flux daemon need it to
     access your forked git repository. Run the kubectl command given
