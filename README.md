@@ -73,7 +73,11 @@ operator alpha. It is best to use a fresh Kubernetes cluster.
 
  1. Set up helm by running `helm init`, as in [Helm's installation instructions](https://docs.helm.sh/using_helm/#quickstart).
  2. Make a fork of this repository to your own account, and clone it to your computer
- 3. In your cloned repo, change the git URL in `artifacts/weave-helm-operator.yaml` to refer to your fork on github
+ 3. In your cloned repo, change the git URL in
+    `artifacts/weave-helm-operator.yaml` to refer to your fork on github. Make
+    sure to use the full ssh form of the url.
+    - Good: `ssh://git@github.com/weaveworks/flux-helm-test`
+    - Bad: `git@github.com:weaveworks/flux-helm-test.git`
  4. Go to [Weave Cloud](https://cloud.weave.works/) and create an instance
  5. Set up the Weave agents by running the provided curl command
 
