@@ -71,7 +71,11 @@ spec:
 You can fork this repo and use it as the basis for trying out the Helm
 operator alpha. It is best to use a fresh Kubernetes cluster.
 
- 1. Set up helm by running `helm init`, as in [Helm's installation instructions](https://docs.helm.sh/using_helm/#quickstart).
+ 1. Set up helm by running `helm init`. Additional configuration may be
+    required when using [GKE](https://docs.helm.sh/using_helm/#gke) or
+    [other Kubernetes Distributions](https://docs.helm.sh/using_helm/#kubernetes-distribution-guide).
+    Have a read through
+    [Helm's installation instructions](https://docs.helm.sh/using_helm/#quickstart).
  2. Make a fork of this repository to your own account, and clone it to your computer
  3. In your cloned repo, change the git URL in
     `artifacts/weave-helm-operator.yaml` to refer to your fork on github. Make
