@@ -10,7 +10,7 @@
     chartGitPath: mongodb
     releaseName: mongodb-database
     values:
-      image: bitnami/mongodb:3.7.1-r1
+      image: bitnami/mongodb:3.7.9-r13
       imagePullPolicy: IfNotPresent
       persistence:
         enabled: false
